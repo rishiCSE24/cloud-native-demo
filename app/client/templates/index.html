@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shortest Path Client</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <main class="page">
+        <section class="card">
+            <h1>Shortest Path Client</h1>
+            <p class="subtitle">
+                Generate a random weighted graph, visualise its topology, and send it to your FastAPI shortest-path server.
+            </p>
+
+            <form method="post" action="/submit" class="form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="server_ip">Server IP</label>
+                        <input
+                            type="text"
+                            id="server_ip"
+                            name="server_ip"
+                            value="{{ server_ip }}"
+                            placeholder="localhost"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="server_port">Server Port</label>
+                        <input
+                            type="number"
+                            id="server_port"
+                            name="server_port"
+                            value="{{ server_port }}"
+                            placeholder="8080"
+                            min="1"
+                            max="65535"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="number_of_nodes">Number of Nodes</label>
+                        <input
+                            type="number"
+                            id="number_of_nodes"
+                            name="number_of_nodes"
+                            value="{{ number_of_nodes }}"
+                            placeholder="5"
+                            min="1"
+                            max="200"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="node_prefix">Prefix</label>
+                        <input
+                            type="text"
+                            id="node_prefix"
+                            name="node_prefix"
+                            value="{{ node_prefix }}"
+                            placeholder="R"
+                            required
+                        >
+                        <small>Node names will be generated as PREFIX_1, PREFIX_2, PREFIX_3, ...</small>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="algorithm">Shortest Path Algorithm</label>
+                        <select id="algorithm" name="algorithm" required>
+                            <option value="dijkstra" {% if selected_algorithm == "dijkstra" %}selected{% endif %}>
+                                Dijkstra's SPF
+                            </option>
+                            <option value="bellman-ford" {% if selected_algorithm == "bellman-ford" %}selected{% endif %}>
+                                Bellman-Ford
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit">Generate Graph and Submit</button>
+            </form>
+        </section>
+
+        {% if error %}
+        <section class="card error-card">
+            <h2>Error</h2>
+            <pre>{{ error }}</pre>
+        </section>
+        {% endif %}
+
+        {% if graph_data %}
+        <section class="card graph-card">
+            <div class="section-header">
+                <div>
+                    <h2>Generated Graph Topology</h2>
+                    <p class="subtitle">
+                        Zoom out to shrink the frame around the visible graph. Use Fit Frame to Graph to do it explicitly.
+                    </p>
+                </div>
+
+                <div class="graph-buttons">
+                    <button type="button" id="fitGraphButton" class="secondary-button">Fit Graph</button>
+                    <button type="button" id="fitFrameButton" class="secondary-button">Fit Frame to Graph</button>
+                    <button type="button" id="zoomInButton" class="secondary-button">Zoom In</button>
+                    <button type="button" id="zoomOutButton" class="secondary-button">Zoom Out</button>
+                    <button type="button" id="resetZoomButton" class="secondary-button">Reset View</button>
+                </div>
+            </div>
+
+            <div id="graph-container">
+                <svg id="graph"></svg>
+                <div id="graph-resize-handle" title="Drag to resize topology view">
+                    <span>↘</span>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        {% if server_url %}
+        <section class="card">
+            <h2>Request URL</h2>
+            <pre>{{ server_url }}</pre>
+        </section>
+        {% endif %}
+
+        {% if payload %}
+        <section class="card">
+            <h2>Generated Request Payload</h2>
+            <pre>{{ payload }}</pre>
+        </section>
+        {% endif %}
+
+        {% if server_response %}
+        <section class="card">
+            <h2>Server Response</h2>
+            <pre>{{ server_response }}</pre>
+        </section>
+        {% endif %}
+    </main>
+
+    {% if graph_data %}
+    <script>
+        window.GRAPH_DATA = {{ graph_data | tojson }};
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="/static/graph.js"></script>
+    {% endif %}
+</body>
+</html>
