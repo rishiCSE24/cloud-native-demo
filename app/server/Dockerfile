@@ -5,15 +5,13 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-COPY requirements.txt .
-
 RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt
+    && pip install --no-cache-dir fastapi uvicorn[standard] networkx pydantic
 
 COPY . .
 
-RUN chmod +x run.sh
+RUN chmod +x run.bash
 
-EXPOSE 9001
+EXPOSE 8080
 
-CMD ["./run.sh"]
+CMD ["./run.bash"]

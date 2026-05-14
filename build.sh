@@ -1,5 +1,5 @@
-docker build -t spf-client:v_0.0.1 -f ./app/client/Dockerfile
+#!/bin/bash
 
-docker build -t spf-client:v_0.0.1 -f ./app/server/Dockerfile
-
+docker build -f app/client/Dockerfile -t spf-client:v_0.0.1 app/client 
+docker build -f app/server/Dockerfile -t spf-server:v_0.0.1 app/server
 
