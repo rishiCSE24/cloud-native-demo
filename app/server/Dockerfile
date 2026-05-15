@@ -10,7 +10,7 @@ RUN pip install --no-cache-dir --upgrade pip \
 
 COPY . .
 
-RUN chmod +x run.bash
+RUN chmod +x run.sh
 
 EXPOSE 9000
 
