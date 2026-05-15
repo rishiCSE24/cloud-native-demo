@@ -32,6 +32,7 @@ sudo apt -y install \\
 ## Clone Repository 
 Clone the repository locally 
 ```bash
+rm -rf cloud-native-demo.git
 git clone https://github.com/rishiCSE24/cloud-native-demo.git
 ```
 
@@ -42,19 +43,18 @@ cd cloud-native-demo
 
 Make the local scripts executable 
 ```bash
-chmod +x build.sh
-chmod +x run.sh
+chmod +x *.sh
 ```
 
-Execute the build scipt
+Fresh Run (all-in-one command)
 ```bash
-./build
+ ./unrun.sh && ./build.sh && ./run.sh 
 ```
 Verify Images in Local docker registry
 ```bash 
 docker images 
+docker ps
+docker logs spf-client 
+docker logs spf-server
 ```
-Run the application in Docker 
-```bash
-./run.sh
-```
+
