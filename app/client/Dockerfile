@@ -16,4 +16,4 @@ RUN chmod +x run.sh
 
 EXPOSE 9001
 
-CMD ["./run.sh"]
+CMD ["./run.sh 9001"]
