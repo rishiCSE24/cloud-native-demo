@@ -1,3 +1,4 @@
 #!/bin/bash
 
-uvicorn main:app --reload --port 9001
+PORT=$1
+uvicorn main:app --reload --port $PORT
