@@ -1,5 +1,5 @@
 #!/bin/bash
 
-curl -X POST "http://localhost:8080/shortest-paths" \
+curl -X POST "http://localhost:9000/shortest-paths" \
   -H "Content-Type: application/json" \
   -d @test_payload.json

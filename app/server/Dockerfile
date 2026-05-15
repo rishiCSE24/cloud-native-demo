@@ -14,4 +14,4 @@ RUN chmod +x run.bash
 
 EXPOSE 9000
 
-CMD ["./run.bash", "9000"]
+CMD ["./run.sh", "9000"]
