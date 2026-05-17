@@ -9,8 +9,8 @@ if [ $# -eq 2 ] ; then
     git commit -m $COMMIT_MSG
     git push --set-upstream origin $BRANCH
 
-    # docker push rishicse24/spf-server:v_0.0.1
-    # docker push rishicse24/spf-client:v_0.0.1
+    docker push rishicse24/spf-server:v_0.0.1
+    docker push rishicse24/spf-client:v_0.0.1
 else 
     echo "ERROR: INVALID_ARG --> Usage: ./push BRANCH COMMIT_MSG"
 fi
