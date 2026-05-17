@@ -1,4 +1,4 @@
-.PHONY: create_cluster delete_cluster
+.PHONY: create_cluster delete_cluster install_argo delete_argo install_spf_app run
 
 create_cluster:
         @sudo apt -y install wget
@@ -34,5 +34,8 @@ delete_argo:
         @pkill -f "kubectl -n argocd port-forward"
 
 install_spf_app:
-    @kubectl apply -f spf-server.yaml
-    @kubectl apply -f spf-client.yaml
+        @kubectl apply -f spf-server.yaml
+        @kubectl apply -f spf-client.yaml
+
+run: create_cluster install_argo install_spf_app
+        @echo done!
