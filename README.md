@@ -58,3 +58,90 @@ docker logs spf-client
 docker logs spf-server
 ```
 
+# Task 1: Kubernetes Deployment 
+## Create a Kubernetes cluster using k3d wrapper 
+For more information about k3d visit here [LINK](https://k3d.io/stable/). 
+```bash
+sudo apt -y install wget
+wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+k3d cluster create --config k3d-config.yaml
+```
+## Install kubectl 
+Kubectl is a RESTful client application that invokes K8s API and interfaces with user. 
+```bash
+kudo snap install kubectl --classic
+```
+## Verify
+Verify a cluster with master and worker nodes exisits as defined in the `k3d-config.yaml` file. 
+```bash
+kubectl get nodes -o wide
+```
+## Revert
+To revert changes 
+```bash 
+# delete cluster
+k3d cluster delete spf-cluster 
+# remove kubectl 
+sudo snap remove kubectl 
+```
+
+# Task 2: Onboard Application [OPTIONAL]
+This is an optional task in case of demonstrating app onboarding without reconsiliation. 
+```bash
+kubectl apply -f conf/spf-server.yaml
+kubectl apply -f conf/spf-client.yaml
+```
+
+
+# Task 3: ArgoCD Integration 
+[ArgoCD](https://argo-cd.readthedocs.io/en/stable/) is the reconcilitation tool between K8s and Github repo. It refers to a path of the GitHub where the desired states are stored to sync with the local k8s cluster. 
+## Adding Argo Operator
+For more details visit [here](https://argo-cd.readthedocs.io/en/stable/getting_started/)
+```bash
+# create a namespace for argocd operator 
+kubectl create namespace argocd
+# add argocd operator using online manifest
+kubectl apply -n argocd --server-side --force-conflicts \
+    -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+```
+## Get Temp Password 
+Decode and copy `argocd-initial-admin-secret`
+```bash 
+kubectl -n argocd get secret argocd-initial-admin-secret \
+            -o jsonpath="{.data.password}" | base64 -d; echo
+```
+
+## Port Forward for external access
+Forward https endport to `TCP 8080` port
+```bash
+nohup kubectl -n argocd port-forward \
+    --address 0.0.0.0 \
+    svc/argocd-server \
+    8080:443 > argocd-port-forward.log 2>&1 &
+```
+
+## Argo Config 
+### Access WebUI
+After forwarding ArgoCD will be available in port `8080` with credential `admin/INIT_SECRET`.  Make sure to update admin password after initial login.
+### Setup 
+Set the following settingin the GUI
+* Name: `spf-app`
+* Project: `default`
+* Repo URL: `GIT_MAIN_BR`
+    * PATH: `conf`
+* Cluster: `Local`
+* Sync Policy 
+    * `Auto Sync`
+    * `Prune Resource`
+    * `Self Heal`
+
+
+## Revert 
+To revert changes 
+```bash
+#delete the argocd namespace  
+kubectl delete ns argocd 
+# Kill the port-forwarding process
+pkill -f "kubectl -n argocd port-forward"
+```
+
