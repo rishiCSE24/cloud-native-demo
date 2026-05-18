@@ -1,5 +1,5 @@
 # Reference Architecture 
-![alt text](image-1.png)
+![alt text](image.png)
 # cloud-native-demo
 Repository to demonstrate full stack cloud native  application deployment 
 
