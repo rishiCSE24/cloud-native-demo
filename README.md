@@ -146,6 +146,35 @@ After the app is set up, it will iniate an auto-sync procedure which will detect
 
 To verify auto-sync, update the number of replica in the manifest at the Single Source of Truth (SSoT) (i.e., Git Repo), it should reflect in the cluster. 
 
+## Reconciliation Optimisation
+ArgoCD by default checks the link repo periodically with an interval of `3 min` or `120 s` plus `30 s` jitter, total `150 s` which can be alterted through `argocd` CLI. 
+
+### Update ArgoCD Configmap
+```bash
+kubectl -n argocd patch configmap argocd-cm \
+  --type merge \
+  -p '{"data":{"timeout.reconciliation":"30s","timeout.reconciliation.jitter":"0s"}}'
+```
+### Rollout
+Then restart the Argo CD components so they read the new setting
+```bash
+kubectl -n argocd rollout restart deployment argocd-repo-server
+kubectl -n argocd rollout restart statefulset argocd-application-controller
+```
+
+### Verify
+wait until all pods are up `[1/1]`
+```bash
+watch kubectl get pods -n argocd
+```
+
+### Update Sync Policy 
+```bash
+APP_NAME='spf-app' # any name
+argocd app set $APP_NAME --sync-policy automated
+```
+
+
 ## Revert 
 To revert changes 
 ```bash
