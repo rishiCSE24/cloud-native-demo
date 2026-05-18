@@ -57,6 +57,12 @@ docker ps
 docker logs spf-client 
 docker logs spf-server
 ```
+Push Docker Images to DockerHub and source code to Github 
+```bash
+BRANCH_NAME='dev-name'
+COMMIT_MSG='commit-text'
+./push $BRANCH_NAME $COMMIT_MSG
+```
 
 # Task 1: Kubernetes Deployment 
 ## Create a Kubernetes cluster using k3d wrapper 
@@ -135,6 +141,10 @@ Set the following settingin the GUI
     * `Prune Resource`
     * `Self Heal`
 
+### Reconciliation 
+After the app is set up, it will iniate an auto-sync procedure which will detect the current state of the k8s cluster does not have the `spf-app`, hence it will automate the deployment. 
+
+To verify auto-sync, update the number of replica in the manifest at the Single Source of Truth (SSoT) (i.e., Git Repo), it should reflect in the cluster. 
 
 ## Revert 
 To revert changes 
