@@ -9,7 +9,7 @@ metadata:
   name: spf-server-dep
   namespace: spf-app-ns
 spec:
-  replicas: 5
+  replicas: 1
   selector:
     matchLabels:
       app: spf-server
